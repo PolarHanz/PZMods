@@ -1,0 +1,36 @@
+VERSION = 1,
+
+perk BonusExp
+{
+	parent = None,
+	translation = BonusExp,
+	passive = false,
+	xp1 = 0,
+	xp2 = 0,
+	xp3 = 0,
+	xp4 = 0,
+	xp5 = 0,
+	xp6 = 0,
+	xp7 = 0,
+	xp8 = 0,
+	xp9 = 0,
+	xp10 = 0,
+}
+
+perk TalentPoints
+{
+	parent = BonusExp,
+	name = TalentPoints,
+	translation = TalentPoints,
+	passive = false,
+	xp1 = 1500,
+	xp2 = 3000,
+	xp3 = 6000,
+	xp4 = 9000,
+	xp5 = 18000,
+	xp6 = 30000,
+	xp7 = 60000,
+	xp8 = 90000,
+	xp9 = 120000,
+	xp10 = 150000,
+}
