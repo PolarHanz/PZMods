@@ -1,0 +1,3 @@
+version=1
+title=Bonus Exp
+description=Adds new passive perk "bonus exp" with talent points into the game
