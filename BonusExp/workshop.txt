@@ -1,4 +1,8 @@
 version=1.1
 id=3413610665
 title=Bonus Exp
-description=Adds new passive perk "bonus exp" with talent points into the game
+description=The mod adds a new passive perk, “Bonus Experience,” with talent points.
+description=
+description=Talent points can be spent on any other perk at your discretion.
+description=Talent points are earned whenever you gain any other experience, amounting to 20% of the experience gained. 
+url=https://github.com/PolarHanz/PZMods/tree/master/Bonus%20Exp
