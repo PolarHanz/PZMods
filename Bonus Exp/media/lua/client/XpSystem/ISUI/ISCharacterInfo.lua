@@ -13,6 +13,18 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local SCROLL_BAR_WIDTH = 13
 
+
+local IS_USE_XP_MULTIPLYER = SandboxVars.BonusExp.IsUseXpMultiplyer;
+local IS_USE_XP_BOOST = SandboxVars.BonusExp.IsUseXpBoost;
+
+local BOOST_MAP = {
+	[0] = 0.5,
+    [1] = 0.75,
+    [2] = 1,
+    [3] = 1.25,
+};
+
+
 --************************************************************************--
 --** ISPanel:initialise
 --**
@@ -128,6 +140,7 @@ function ISCharacterInfo:render()
 	local maxY = y
 	local fontOffset = (BUTTON_HGT-FONT_HGT_SMALL)/2
 	local rowHgt = BUTTON_HGT
+
 	for i,parentPerk in ipairs(self.sorted) do
 		local perkList = self.perks[parentPerk:getType()]
 		-- we first draw our parent name
@@ -186,8 +199,26 @@ function ISCharacterInfo:render()
 					-- function ISCharacterInfo:initialise()
 					-- 	ISPanelJoypad.initialise(self);
 					-- end
+					local xp = getPlayer():getXp();
 
-					local amount = function() return bonusExpUpdate.amount * 4; end;
+					local amount = function(perk) 
+						if not perk then return bonusExpUpdate.amount; end;
+
+						local multiplier = 1;
+
+						if IS_USE_XP_MULTIPLYER then
+							multiplier = multiplier + xp:getMultiplier(perk)
+						end;
+						
+						if IS_USE_XP_BOOST then
+							multiplier = multiplier + (BOOST_MAP[xp:getPerkBoost(perk)] or 1)
+						end;
+						
+						-- print("multiplier! - ", multiplier, bonusExpUpdate.amount * multiplier);
+						
+						return bonusExpUpdate.amount * multiplier; 
+					end;
+					
 					local btn_xpAdd = 
 						ISButton:new(
 							left + UI_BORDER_SPACING*3 + self.txtLen + UI_BORDER_SPACING + progressBar.width, 
@@ -197,37 +228,19 @@ function ISCharacterInfo:render()
 							"+", 
 							self, 
 							function()
-								if getPlayer():getXp():getXP(Perks.TalentPoints) < bonusExpUpdate.amount then
-									-- local alfa = 0.3
-									-- btn_xpAdd:borderColor.a = alfa;
-									-- btn_xpAdd:backgroundColor.a = alfa;
-									-- btn_xpAdd:backgroundColorMouseOver.a = alfa;
-									-- btn_xpAdd:textureColor.a = alfa;
-									-- btn_xpAdd:textColor.a = alfa;
-									--addXp(getPlayer(), Perks.TalentPoints, -1 * getPlayer():getXp():getXP(Perks.TalentPoints)); 
-									--addXp(getPlayer(), perk:getType(), getPlayer():getXp():getXP(Perks.TalentPoints)); 
+								if xp:getXP(Perks.TalentPoints) < bonusExpUpdate.amount then
 									return;
 								end
-								local multy = 1 + self.char:getXp():getMultiplier(perk:getType())
 								bonusExpUpdate.added = true;
-								addXp(getPlayer(), Perks.TalentPoints, -1 * amount());
-								addXp(getPlayer(), perk:getType(), amount());
+								xp:AddXP(Perks.TalentPoints, -1 * amount(), true, false, true);
+								xp:AddXP(perk:getType(), amount(perk:getType()), true, false, true);
 							end);
-
-					
-					-- if getPlayer():getXp():getXP(Perks.TalentPoints) < bonusExpUpdate.amount then
-					-- 	local alfa = 0.3
-					-- 	btn_xpAdd.borderColor.a = alfa;
-					-- 	btn_xpAdd.backgroundColor.a = alfa;
-					-- 	btn_xpAdd.backgroundColorMouseOver = btn_xpAdd.backgroundColor;
-					-- 	btn_xpAdd.textureColor.a = alfa;
-					-- 	btn_xpAdd.textColor.a = alfa;
-					-- end
 
 					btn_xpAdd:initialise();
 					
 					if perk:getType() ~= Perks.TalentPoints then 
 						self:addChild(btn_xpAdd);
+						table.insert(self.progressBars, btn_xpAdd);
 					end
 				end
 				y = y + rowHgt;

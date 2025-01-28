@@ -7,13 +7,14 @@ require "ISBaseObject";
 bonusExpUpdate = ISBaseObject:derive("bonusExpUpdate");
 
 local AMOUNT = 250;
+local PERCENT_AMOUNT = SandboxVars.BonusExp.AmountPercent or 0.2;
 
 bonusExpUpdate.amount = AMOUNT;
 bonusExpUpdate.added = false;
 
 bonusExpUpdate.addXp = function(owner, type, amount)
-    --print("bonusExpUpdate amount - ", type," ", amount," ", bonusExpUpdate.amount," ",bonusExpUpdate.added);
-	if type == Perks.TalentPoints or amount < 0 then
+    -- print("bonusExpUpdate amount - ", type," ", amount," ", bonusExpUpdate.amount," ",bonusExpUpdate.added);
+	if type == Perks.TalentPoints or amount < 0 or owner:isDead() then
         return;
 	end
 
@@ -22,8 +23,7 @@ bonusExpUpdate.addXp = function(owner, type, amount)
         return;
     end
 
-    -- amount приходит полным с множителями, но почему-то addXp добавляет 25% от amount. Вероятно из-за отсутстсвия влияния глобального мультиплаера для перков.
-    addXp(owner, Perks.TalentPoints, amount);
+    owner:getXp():AddXP(Perks.TalentPoints, amount * PERCENT_AMOUNT, true, false, true);
 end
 
 Events.AddXP.Add(bonusExpUpdate.addXp);
@@ -31,7 +31,6 @@ Events.AddXP.Add(bonusExpUpdate.addXp);
 -- 42 - shift
 -- 29 - ctrl
 -- 56 - alt
-
 keyMap = {
     [42] = 10,
     [29] = 100,
