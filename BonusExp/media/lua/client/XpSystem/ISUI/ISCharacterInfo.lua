@@ -13,10 +13,6 @@ local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local BUTTON_HGT = FONT_HGT_SMALL + 6
 local SCROLL_BAR_WIDTH = 13
 
-
-local IS_USE_XP_MULTIPLYER = SandboxVars.BonusExp.IsUseXpMultiplyer;
-local IS_USE_XP_BOOST = SandboxVars.BonusExp.IsUseXpBoost;
-
 local BOOST_MAP = {
 	[0] = 0.5,
     [1] = 0.75,
@@ -206,15 +202,13 @@ function ISCharacterInfo:render()
 
 						local multiplier = 1;
 
-						if IS_USE_XP_MULTIPLYER then
+						if SandboxVars.BonusExp.IsUseXpMultiplyer then
 							multiplier = multiplier + xp:getMultiplier(perk)
 						end;
 						
-						if IS_USE_XP_BOOST then
+						if SandboxVars.BonusExp.IsUseXpBoost then
 							multiplier = multiplier + (BOOST_MAP[xp:getPerkBoost(perk)] or 1)
 						end;
-						
-						-- print("multiplier! - ", multiplier, bonusExpUpdate.amount * multiplier);
 						
 						return bonusExpUpdate.amount * multiplier; 
 					end;
